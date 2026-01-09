@@ -1,14 +1,38 @@
 // src/data.js
-// Nanti bagian ini bisa diganti dengan fetch API dari Laravel
 
 export const villageInfo = {
   name: "Desa Sukajaya Lempasing",
-  district: "Teluk Pandan", // Lempasing biasanya masuk Teluk Pandan/Pesawaran
+  district: "Teluk Pandan",
   regency: "Pesawaran",
   province: "Lampung",
-  description: "Selamat datang di website resmi Desa Sukajaya Lempasing. Desa pesisir yang asri dengan potensi wisata bahari dan kreativitas UMKM warganya.",
-  heroImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop" // Placeholder pantai
+  description: "Selamat datang di website resmi Desa Sukajaya Lempasing. Desa pesisir yang asri dengan potensi wisata bahari yang memukau dan kreativitas UMKM warganya yang mendunia.",
+  heroImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop"
 };
+
+export const statsData = [
+  { id: 1, value: "2.500+", label: "Penduduk" },
+  { id: 2, value: "450", label: "Kepala Keluarga" },
+  { id: 3, value: "10+", label: "Destinasi Wisata" },
+  { id: 4, value: "25+", label: "UMKM Aktif" },
+];
+
+export const featuresData = [
+  {
+    title: "Pelayanan Terpadu",
+    desc: "Akses pelayanan administrasi desa yang cepat, transparan, dan ramah bagi seluruh warga.",
+    icon: "FileText"
+  },
+  {
+    title: "Potensi Bahari",
+    desc: "Garis pantai yang indah menjadi pusat ekonomi dan pariwisata unggulan desa.",
+    icon: "Anchor"
+  },
+  {
+    title: "Ekonomi Kreatif",
+    desc: "Pusat oleh-oleh dan kerajinan tangan hasil karya warga lokal yang berkualitas.",
+    icon: "ShoppingBag"
+  }
+];
 
 export const wisataData = [
   {
