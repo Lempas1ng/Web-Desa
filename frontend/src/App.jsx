@@ -1,12 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
-import Profil from './pages/Profil';
+// Import Profil dihapus
 import Wisata from './pages/Wisata';
 import Umkm from './pages/Umkm';
 import WisataDetail from './pages/WisataDetail';
 import UmkmDetail from './pages/UmkmDetail';
-// Import Berita
 import Berita from './pages/Berita';
 import BeritaDetail from './pages/BeritaDetail';
 
@@ -16,7 +15,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/profil" element={<Profil />} />
+        {/* Route Profil dihapus */}
         
         <Route path="/wisata" element={<Wisata />} />
         <Route path="/wisata/:id" element={<WisataDetail />} />
@@ -24,12 +23,10 @@ function App() {
         <Route path="/umkm" element={<Umkm />} />
         <Route path="/umkm/:id" element={<UmkmDetail />} />
 
-        {/* Rute Berita */}
         <Route path="/berita" element={<Berita />} />
         <Route path="/berita/:id" element={<BeritaDetail />} />
       </Routes>
       
-      {/* Global Footer (Bisa dipisah jadi komponen sendiri) */}
       <footer className="bg-slate-900 text-slate-300 py-10 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 text-center">
             <p className="mb-4">&copy; 2025 KKN Desa Sukajaya Lempasing. All rights reserved.</p>

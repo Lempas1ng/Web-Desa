@@ -7,7 +7,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
-  // Efek scroll untuk mengubah warna navbar
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
@@ -22,7 +21,6 @@ export default function Navbar() {
 
   const isHome = location.pathname === '/';
   
-  // Logic styling dinamis
   const navClass = `fixed w-full z-50 transition-all duration-300 ${
     scrolled || !isHome ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'
   }`;
@@ -52,7 +50,7 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className={linkClass('/')}>Beranda</Link>
-            <Link to="/profil" className={linkClass('/profil')}>Profil Desa</Link>
+            {/* Link Profil Dihapus */}
             <Link to="/wisata" className={linkClass('/wisata')}>Wisata</Link>
             <Link to="/umkm" className={linkClass('/umkm')}>UMKM</Link>
             <Link to="/berita" className={linkClass('/berita')}>Berita</Link>
@@ -72,7 +70,7 @@ export default function Navbar() {
         <div className="md:hidden bg-white border-t absolute w-full shadow-xl">
           <div className="px-4 pt-4 pb-6 space-y-2 flex flex-col">
             <Link to="/" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">Beranda</Link>
-            <Link to="/profil" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">Profil Desa</Link>
+            {/* Link Profil Dihapus */}
             <Link to="/wisata" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">Wisata</Link>
             <Link to="/umkm" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">UMKM</Link>
             <Link to="/berita" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium text-primary">Berita</Link>

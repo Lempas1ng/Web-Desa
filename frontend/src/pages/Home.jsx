@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Anchor, ShoppingBag, FileText, ChevronDown, Newspaper } from 'lucide-react';
+import { ArrowRight, MapPin, Anchor, ShoppingBag, FileText, ChevronDown, Newspaper, Target, Compass } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { villageInfo, statsData, featuresData, beritaData } from '../data'; // Import beritaData
+import { villageInfo, statsData, featuresData, beritaData } from '../data';
 
 // Variabel animasi
 const fadeInUp = {
@@ -20,15 +20,13 @@ export default function Home() {
     "ShoppingBag": ShoppingBag
   };
 
-  // Ambil 3 berita terbaru untuk ditampilkan di Home
   const latestNews = beritaData.slice(0, 3);
 
   return (
     <div className="flex flex-col min-h-screen">
       
-      {/* 1. HERO SECTION (Full Screen) */}
+      {/* 1. HERO SECTION */}
       <div className="relative h-screen w-full overflow-hidden">
-        {/* Background Image dengan efek Zoom halus */}
         <motion.div 
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
@@ -36,11 +34,8 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url('${villageInfo.heroImage}')` }}
         />
-        
-        {/* Overlay Gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-slate-50"></div>
 
-        {/* Content Hero */}
         <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-4 max-w-5xl mx-auto mt-10">
           <motion.span 
             initial={{ opacity: 0, y: 20 }}
@@ -81,13 +76,10 @@ export default function Home() {
             <Link to="/wisata" className="group bg-primary hover:bg-sky-500 text-white px-8 py-4 rounded-full font-bold transition-all duration-300 shadow-[0_0_20px_rgba(14,165,233,0.5)] hover:shadow-[0_0_30px_rgba(14,165,233,0.7)] flex items-center gap-2">
               Jelajahi Wisata <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link to="/profil" className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-8 py-4 rounded-full font-bold transition duration-300 border border-white/30">
-              Profil Desa
-            </Link>
+            {/* Tombol Profil dihapus karena sudah digabung ke Home */}
           </motion.div>
         </div>
 
-        {/* Scroll Down Indicator */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, y: [0, 10, 0] }}
@@ -98,7 +90,7 @@ export default function Home() {
         </motion.div>
       </div>
 
-      {/* 2. STATISTIK (Floating Section) */}
+      {/* 2. STATISTIK */}
       <div className="relative z-20 -mt-20 px-4">
         <motion.div 
           initial="hidden"
@@ -116,8 +108,8 @@ export default function Home() {
         </motion.div>
       </div>
 
-      {/* 3. TENTANG & SAMBUTAN */}
-      <section className="py-24 px-4 bg-slate-50">
+      {/* 3. TENTANG DESA */}
+      <section className="pt-24 pb-12 px-4 bg-slate-50">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <motion.div 
              initial="hidden"
@@ -132,7 +124,7 @@ export default function Home() {
               Membangun Desa, <br/> Mensejahterakan Warga
             </h2>
             <p className="text-slate-600 text-lg leading-relaxed mb-6">
-              {villageInfo.description} Kami berkomitmen untuk terus berinovasi dalam pelayanan publik dan pengembangan potensi lokal demi kemajuan bersama.
+              {villageInfo.description} Kami berkomitmen untuk terus berinovasi dalam pelayanan publik, menjaga kearifan lokal, dan mengembangkan potensi wisata demi kemajuan bersama.
             </p>
             <div className="flex items-center gap-4 text-slate-500 font-medium">
               <div className="flex items-center gap-2">
@@ -165,7 +157,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. KEUNGGULAN (Cards) */}
+      {/* 4. VISI & MISI (Dipindahkan dari Halaman Profil) */}
+      <section className="py-20 bg-slate-50 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="grid md:grid-cols-2 gap-8"
+          >
+            {/* Kartu Visi */}
+            <div className="bg-white p-10 rounded-3xl shadow-lg border border-blue-50 relative overflow-hidden group hover:shadow-xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                <Target className="w-40 h-40 text-primary" />
+              </div>
+              <h3 className="text-2xl font-bold text-primary mb-6 flex items-center gap-3">
+                <div className="p-3 bg-blue-50 rounded-xl"><Target className="w-6 h-6" /></div>
+                Visi Desa
+              </h3>
+              <p className="text-slate-700 text-xl leading-relaxed font-medium italic">
+                "Mewujudkan Desa {villageInfo.name} yang maju, mandiri, dan sejahtera berbasis potensi lokal serta berwawasan lingkungan."
+              </p>
+            </div>
+
+            {/* Kartu Misi */}
+            <div className="bg-white p-10 rounded-3xl shadow-lg border border-blue-50 relative overflow-hidden group hover:shadow-xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                <Compass className="w-40 h-40 text-primary" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                <div className="p-3 bg-slate-100 rounded-xl"><Compass className="w-6 h-6 text-slate-600" /></div>
+                Misi Pembangunan
+              </h3>
+              <ul className="space-y-4 text-slate-600">
+                <li className="flex gap-4">
+                  <span className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                  <span>Mengembangkan potensi pariwisata bahari yang berkelanjutan dan ramah lingkungan.</span>
+                </li>
+                <li className="flex gap-4">
+                   <span className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                   <span>Meningkatkan pemberdayaan UMKM dan ekonomi kreatif masyarakat desa.</span>
+                </li>
+                <li className="flex gap-4">
+                   <span className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">3</span>
+                   <span>Mewujudkan tata kelola pemerintahan desa yang transparan dan digital.</span>
+                </li>
+              </ul>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 5. KEUNGGULAN */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
@@ -200,7 +244,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. BERITA TERBARU (SECTION BARU) */}
+      {/* 6. BERITA TERBARU */}
       <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4">
             <div className="flex justify-between items-end mb-12">
@@ -250,7 +294,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. CALL TO ACTION */}
+      {/* 7. CALL TO ACTION */}
       <section className="py-20 bg-primary relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10 text-white">
