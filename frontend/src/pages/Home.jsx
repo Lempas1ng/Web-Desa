@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Anchor, ShoppingBag, FileText, ChevronDown } from 'lucide-react';
+import { ArrowRight, MapPin, Anchor, ShoppingBag, FileText, ChevronDown, Newspaper } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { villageInfo, statsData, featuresData } from '../data';
+import { villageInfo, statsData, featuresData, beritaData } from '../data'; // Import beritaData
 
 // Variabel animasi
 const fadeInUp = {
@@ -19,6 +19,9 @@ export default function Home() {
     "Anchor": Anchor,
     "ShoppingBag": ShoppingBag
   };
+
+  // Ambil 3 berita terbaru untuk ditampilkan di Home
+  const latestNews = beritaData.slice(0, 3);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -197,7 +200,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. CALL TO ACTION */}
+      {/* 5. BERITA TERBARU (SECTION BARU) */}
+      <section className="py-24 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4">
+            <div className="flex justify-between items-end mb-12">
+                <div>
+                    <h2 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
+                        <Newspaper className="text-primary w-8 h-8" /> Kabar Desa Terkini
+                    </h2>
+                    <p className="text-slate-600 mt-2">Ikuti perkembangan terbaru dari desa kami</p>
+                </div>
+                <Link to="/berita" className="hidden md:flex items-center text-primary font-semibold hover:text-sky-700 transition">
+                    Lihat Semua Berita <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
+            </div>
+
+            <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={staggerContainer}
+                className="grid md:grid-cols-3 gap-8"
+            >
+                {latestNews.map((news) => (
+                    <motion.div variants={fadeInUp} key={news.id}>
+                        <Link to={`/berita/${news.id}`} className="group block h-full">
+                            <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-slate-100">
+                                <div className="h-48 overflow-hidden relative">
+                                    <img src={news.image} alt={news.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full text-slate-700 shadow-sm">{news.category}</div>
+                                </div>
+                                <div className="p-6 flex flex-col flex-grow">
+                                    <div className="text-xs text-gray-500 mb-2">{news.date}</div>
+                                    <h3 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors line-clamp-2">{news.title}</h3>
+                                    <p className="text-slate-600 text-sm line-clamp-3 mb-4 flex-grow">{news.snippet}</p>
+                                    <span className="text-primary text-sm font-medium mt-auto inline-flex items-center group-hover:underline">Baca Selengkapnya &rarr;</span>
+                                </div>
+                            </div>
+                        </Link>
+                    </motion.div>
+                ))}
+            </motion.div>
+            
+            <div className="mt-8 text-center md:hidden">
+                <Link to="/berita" className="inline-block bg-white border border-gray-300 px-6 py-3 rounded-full text-gray-700 font-medium shadow-sm">
+                    Lihat Semua Berita
+                </Link>
+            </div>
+        </div>
+      </section>
+
+      {/* 6. CALL TO ACTION */}
       <section className="py-20 bg-primary relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10 text-white">

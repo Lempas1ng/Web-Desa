@@ -77,3 +77,37 @@ export const umkmData = [
     priceRange: "Mulai dari Rp 5.000"
   }
 ];
+
+// --- DATA BARU UNTUK BERITA ---
+export const beritaData = [
+  {
+    id: 1,
+    title: "Penyuluhan Kesehatan Lansia di Balai Desa",
+    date: "10 Jan 2025",
+    author: "Admin Desa",
+    category: "Kesehatan",
+    snippet: "Kegiatan rutin posyandu lansia kembali digelar dengan antusiasme tinggi dari warga...",
+    content: "Kegiatan rutin posyandu lansia kembali digelar dengan antusiasme tinggi dari warga. Acara ini dihadiri oleh petugas puskesmas kecamatan yang memberikan pemeriksaan gratis berupa cek tensi, gula darah, dan kolesterol. Kepala Desa berharap kegiatan ini dapat terus meningkatkan kualitas hidup para lansia di Desa Sukajaya Lempasing.",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop"
+  },
+  {
+    id: 2,
+    title: "Gotong Royong Bersihkan Pantai",
+    date: "08 Jan 2025",
+    author: "Karang Taruna",
+    category: "Lingkungan",
+    snippet: "Warga bersama mahasiswa KKN bahu-membahu membersihkan area pesisir pantai...",
+    content: "Warga bersama mahasiswa KKN bahu-membahu membersihkan area pesisir pantai untuk menyambut wisatawan. Kegiatan ini difokuskan pada pengangkatan sampah plastik yang terbawa ombak. Selain membersihkan, juga dilakukan pemasangan plang himbauan 'Jagalah Kebersihan' di beberapa titik strategis.",
+    image: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?q=80&w=2070&auto=format&fit=crop"
+  },
+  {
+    id: 3,
+    title: "Pelatihan Digital Marketing UMKM",
+    date: "05 Jan 2025",
+    author: "Tim KKN",
+    category: "Ekonomi",
+    snippet: "Mahasiswa KKN mengadakan workshop pembuatan konten media sosial untuk pemasaran...",
+    content: "Mahasiswa KKN mengadakan workshop pembuatan konten media sosial untuk pemasaran produk UMKM lokal. Para pelaku usaha diajarkan cara mengambil foto produk yang menarik hanya dengan menggunakan HP, serta cara membuat caption yang menjual di Instagram dan WhatsApp.",
+    image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032&auto=format&fit=crop"
+  }
+];

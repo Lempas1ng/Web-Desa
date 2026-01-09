@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Anchor } from 'lucide-react'; // Mengganti ikon Home dengan Anchor agar lebih bahari
+import { Menu, X, Anchor } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function Navbar() {
@@ -55,6 +55,7 @@ export default function Navbar() {
             <Link to="/profil" className={linkClass('/profil')}>Profil Desa</Link>
             <Link to="/wisata" className={linkClass('/wisata')}>Wisata</Link>
             <Link to="/umkm" className={linkClass('/umkm')}>UMKM</Link>
+            <Link to="/berita" className={linkClass('/berita')}>Berita</Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -74,6 +75,7 @@ export default function Navbar() {
             <Link to="/profil" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">Profil Desa</Link>
             <Link to="/wisata" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">Wisata</Link>
             <Link to="/umkm" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">UMKM</Link>
+            <Link to="/berita" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium text-primary">Berita</Link>
           </div>
         </div>
       )}
