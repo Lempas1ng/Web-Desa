@@ -1,13 +1,33 @@
-public function up(): void
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
 {
-    Schema::create('surats', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama_pemohon');    // Nama Warga
-        $table->string('nik');             // NIK Warga
-        $table->string('no_hp');           // No WA (Penting buat hubungi balik)
-        $table->string('jenis_surat');     // Contoh: SKTM, Domisili, dll
-        $table->text('keterangan')->nullable(); // Keperluan tambahan
-        $table->string('status')->default('Menunggu'); // Status awal selalu 'Menunggu'
-        $table->timestamps();
-    });
-}
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('surats', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_pemohon');
+            $table->string('nik');
+            $table->string('no_hp');
+            $table->string('jenis_surat');
+            $table->text('keterangan')->nullable();
+            $table->string('status')->default('Menunggu');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('surats');
+    }
+};
