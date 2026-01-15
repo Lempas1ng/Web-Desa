@@ -50,10 +50,18 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className={linkClass('/')}>Beranda</Link>
-            {/* Link Profil Dihapus */}
             <Link to="/wisata" className={linkClass('/wisata')}>Wisata</Link>
             <Link to="/umkm" className={linkClass('/umkm')}>UMKM</Link>
             <Link to="/berita" className={linkClass('/berita')}>Berita</Link>
+            
+            {/* TAMBAHAN BARU: Menu Layanan Surat */}
+            <Link to="/layanan-surat" className={`px-4 py-2 rounded-full font-bold transition-all ${
+              scrolled || !isHome 
+                ? 'bg-primary text-white hover:bg-blue-700' 
+                : 'bg-white text-primary hover:bg-gray-100'
+            }`}>
+              Layanan Surat
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -70,10 +78,14 @@ export default function Navbar() {
         <div className="md:hidden bg-white border-t absolute w-full shadow-xl">
           <div className="px-4 pt-4 pb-6 space-y-2 flex flex-col">
             <Link to="/" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">Beranda</Link>
-            {/* Link Profil Dihapus */}
             <Link to="/wisata" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">Wisata</Link>
             <Link to="/umkm" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">UMKM</Link>
-            <Link to="/berita" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium text-primary">Berita</Link>
+            <Link to="/berita" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">Berita</Link>
+            
+            {/* TAMBAHAN BARU: Menu Mobile Layanan Surat */}
+            <Link to="/layanan-surat" onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-lg bg-primary/10 text-primary font-bold">
+              📩 Layanan Surat
+            </Link>
           </div>
         </div>
       )}
