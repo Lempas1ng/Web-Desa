@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Ganti URL ini jika port backend Anda berbeda
 const API_URL = 'http://127.0.0.1:8000/api';
 
 const api = axios.create({
@@ -9,6 +8,16 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   }
+});
+
+// --- TAMBAHAN: INTERCEPTOR ---
+// Sebelum request dikirim, cek apakah ada token di localStorage
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export default api;

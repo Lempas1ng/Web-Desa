@@ -10,23 +10,28 @@ import Wisata from './pages/Wisata';
 import WisataDetail from './pages/WisataDetail';
 import LayananSurat from './pages/LayananSurat';
 import AdminDashboard from './pages/AdminDashboard'; // <--- INI PENTING
+import { Routes, Route } from 'react-router-dom';
+import Login from './pages/Login'; // <--- Import Login
+import ProtectedRoute from './components/ProtectedRoute'; // <--- Import Pengaman
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
     <div className="bg-slate-50 min-h-screen font-sans text-slate-900">
       <Navbar />
       <Routes>
+        {/* Rute Publik */}
         <Route path="/" element={<Home />} />
-        <Route path="/berita" element={<Berita />} />
-        <Route path="/berita/:id" element={<BeritaDetail />} />
-        <Route path="/profil" element={<Profil />} />
-        <Route path="/umkm" element={<Umkm />} />
-        <Route path="/umkm/:id" element={<UmkmDetail />} />
-        <Route path="/wisata" element={<Wisata />} />
-        <Route path="/wisata/:id" element={<WisataDetail />} />
+        <Route path="/login" element={<Login />} /> 
+        
+        {/* ... Rute publik lain (berita, wisata, dll) ... */}
         <Route path="/layanan-surat" element={<LayananSurat />} />
-        {/* Halaman Rahasia Admin */}
-        <Route path="/admin-desa-rahasia" element={<AdminDashboard />} />   
+
+        {/* Rute RAHASIA (Diproteksi) */}
+        <Route element={<ProtectedRoute />}>
+           {/* URL saya ganti jadi lebih standar, karena sudah aman diproteksi password */}
+           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        </Route>
       </Routes>
     </div>
   );

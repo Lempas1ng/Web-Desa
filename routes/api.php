@@ -4,36 +4,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Berita;
 use App\Http\Controllers\SuratController;
+use App\Http\Controllers\Api\AuthController; // <--- Import ini
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-*/
+// --- PUBLIC ROUTES (Bisa diakses siapa saja) ---
 
-// 1. API BERITA (GET) - Untuk ditampilkan di halaman depan warga
+// Login
+Route::post('/login', [AuthController::class, 'login']);
+
+// Berita & Info Publik
 Route::get('/berita', function () {
-    $data = Berita::latest()->get();
-    return response()->json($data);
+    return response()->json(Berita::latest()->get());
 });
-
-// 2. API DETAIL BERITA (GET) - Kalau diklik satu berita
 Route::get('/berita/{id}', function ($id) {
+    // ... (kode lama Anda)
     $data = Berita::find($id);
-    if ($data) {
-        return response()->json($data);
-    } else {
-        return response()->json(['message' => 'Berita tidak ditemukan'], 404);
-    }
+    return $data ? response()->json($data) : response()->json(['message' => '404'], 404);
 });
-
-// 3. API AJUKAN SURAT (POST) - Untuk warga kirim form surat
+// Form Surat (Warga kirim)
 Route::post('/surat', [SuratController::class, 'store']);
-// --- TAMBAHKAN INI ---
-Route::get('/surat', [SuratController::class, 'index']);      // Buat Admin lihat daftar
-Route::put('/surat/{id}', [SuratController::class, 'update']); // Buat Admin ganti status
 
-// 4. API TEST (Cek koneksi)
-Route::get('/test', function() {
-    return response()->json(['status' => 'Backend Aman Jaya!']);
+
+// --- PROTECTED ROUTES (Hanya Admin yang sudah Login) ---
+Route::middleware('auth:sanctum')->group(function () {
+    
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Admin Surat (Lihat & Update)
+    Route::get('/surat', [SuratController::class, 'index']);
+    Route::put('/surat/{id}', [SuratController::class, 'update']);
+    
+    // Nanti di sini kita tambah route untuk CRUD Berita/Wisata/UMKM
 });
