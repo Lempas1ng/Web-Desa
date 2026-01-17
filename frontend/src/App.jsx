@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Halaman Admin
 import AdminDashboard from './pages/AdminDashboard';
 import SuratAdmin from './pages/SuratAdmin';
+import BeritaAdmin from './pages/BeritaAdmin';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/surat-admin" element={<SuratAdmin />} />
+          <Route path="/berita-admin" element={<BeritaAdmin />} />
         </Route>
       </Routes>
     </div>
