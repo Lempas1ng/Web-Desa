@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Berita;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\DashboardController; // <--- Import Controller Baru
+use App\Http\Controllers\Api\DashboardController;
 
 // --- PUBLIC ROUTES (Bisa diakses siapa saja) ---
 
@@ -29,12 +29,12 @@ Route::post('/surat', [SuratController::class, 'store']);
 // --- PROTECTED ROUTES (Hanya Admin yang sudah Login) ---
 Route::middleware('auth:sanctum')->group(function () {
     
-    // Ambil data user yang sedang login
+    // Info User Login
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
-    // Dashboard Stats (Route Baru)
+    // Dashboard Stats
     Route::get('/dashboard-stats', [DashboardController::class, 'index']);
 
     // Logout
@@ -43,6 +43,4 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin Surat (Lihat & Update)
     Route::get('/surat', [SuratController::class, 'index']);
     Route::put('/surat/{id}', [SuratController::class, 'update']);
-    
-    // Nanti di sini Anda bisa tambah route CRUD Berita/UMKM
 });

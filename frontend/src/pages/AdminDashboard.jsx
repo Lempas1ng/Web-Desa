@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../api'; // Menggunakan konfigurasi axios yang sudah ada token-nya
+import api from '../api';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
   
-  // State untuk menyimpan data statistik
+  // State data dashboard
   const [stats, setStats] = useState({
     total_surat: 0,
     total_berita: 0,
@@ -13,26 +13,26 @@ export default function AdminDashboard() {
     surat_terbaru: []
   });
   
-  // State untuk user yang sedang login
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Ambil Data saat halaman dibuka
+  // Ambil data saat halaman dibuka
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. Ambil info user
+        // Ambil info user login
         const userRes = await api.get('/user');
         setUser(userRes.data);
 
-        // 2. Ambil statistik dashboard
+        // Ambil statistik dashboard
         const statRes = await api.get('/dashboard-stats');
         setStats(statRes.data);
       } catch (error) {
         console.error("Gagal mengambil data dashboard:", error);
-        // Jika token expired atau error auth, lempar ke login
+        // Jika token invalid (401), lempar ke login
         if (error.response && error.response.status === 401) {
           localStorage.removeItem('token');
+          localStorage.removeItem('user_name');
           navigate('/login');
         }
       } finally {
@@ -43,14 +43,18 @@ export default function AdminDashboard() {
     fetchData();
   }, [navigate]);
 
-  // Fungsi Logout
+  // --- FUNGSI LOGOUT YANG DIPERBAIKI ---
   const handleLogout = async () => {
     try {
+      // Coba request logout ke backend
       await api.post('/logout');
-      localStorage.removeItem('token'); // Hapus token dari browser
-      navigate('/login'); // Kembali ke halaman login
     } catch (error) {
-      console.error("Logout error", error);
+      console.warn("Logout server warning (mungkin token sudah expired), lanjutkan hapus lokal.");
+    } finally {
+      // PENTING: Apapun yang terjadi di server, Hapus token di Browser & Redirect
+      localStorage.removeItem('token');
+      localStorage.removeItem('user_name');
+      navigate('/login');
     }
   };
 
