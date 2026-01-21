@@ -3,51 +3,38 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Berita;
-use App\Http\Controllers\SuratController;
+use App\Http\Controllers\SuratController; // Pastikan cuma dipanggil 1x
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\BeritaController;
 
-// --- PUBLIC ROUTES (Bisa diakses tanpa login) ---
+// --- PUBLIC ROUTES (Bebas Akses) ---
 
-// Login Admin
+// Login & Berita
 Route::post('/login', [AuthController::class, 'login']);
-
-// Ambil List Berita (Untuk Halaman Depan)
-Route::get('/berita', function () {
-    return response()->json(Berita::latest()->get());
-});
-
-// Ambil Detail Berita
-Route::get('/berita/{id}', function ($id) {
-    $data = Berita::find($id);
-    return $data ? response()->json($data) : response()->json(['message' => '404'], 404);
-});
+Route::get('/berita', function () { return response()->json(Berita::latest()->get()); });
+Route::get('/berita/{id}', function ($id) { return response()->json(Berita::find($id)); });
 
 // Kirim Surat (Warga)
 Route::post('/surat', [SuratController::class, 'store']);
 
+// 🔥 KHUSUS CETAK PDF (Harus di sini, JANGAN dipindah ke dalam middleware)
+Route::get('/surat/{id}/cetak', [SuratController::class, 'cetakPdf']);
 
-// --- PROTECTED ROUTES (Hanya Admin yang Login) ---
+
+// --- PROTECTED ROUTES (Harus Login Admin) ---
 Route::middleware('auth:sanctum')->group(function () {
     
-    // Info User yang sedang login
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-
-    // Statistik Dashboard
+    Route::get('/user', function (Request $request) { return $request->user(); });
     Route::get('/dashboard-stats', [DashboardController::class, 'index']);
-
-    // Logout
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // --- MANAJEMEN SURAT (ADMIN) ---
-    Route::get('/surat', [SuratController::class, 'index']); // Lihat semua surat
-    Route::put('/surat/{id}', [SuratController::class, 'update']); // Update status surat
+    // Manajemen Surat (Hanya Data JSON)
+    Route::get('/surat', [SuratController::class, 'index']); 
+    Route::put('/surat/{id}', [SuratController::class, 'update']);
 
-    // --- MANAJEMEN BERITA (ADMIN) ---
-    Route::post('/berita', [BeritaController::class, 'store']); // Tambah Berita
-    Route::put('/berita/{id}', [BeritaController::class, 'update']); // Edit Berita
-    Route::delete('/berita/{id}', [BeritaController::class, 'destroy']); // Hapus Berita
+    // Manajemen Berita
+    Route::post('/berita', [BeritaController::class, 'store']);
+    Route::put('/berita/{id}', [BeritaController::class, 'update']);
+    Route::delete('/berita/{id}', [BeritaController::class, 'destroy']);
 });

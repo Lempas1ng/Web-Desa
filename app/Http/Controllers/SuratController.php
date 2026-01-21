@@ -2,60 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Surat;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf; // <--- Pastikan baris ini ada!
 
 class SuratController extends Controller
 {
-    // Ambil semua surat (Admin)
+    // 1. Ambil List Surat
     public function index()
     {
-        // Urutkan dari yang terbaru
-        $data = Surat::latest()->get();
-        return response()->json($data);
+        return response()->json(Surat::latest()->get());
     }
 
-    // Simpan surat baru (Warga)
+    // 2. Simpan Surat (Warga)
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_pemohon' => 'required|string|max:255',
-            'nik' => 'required|string|max:20',
+            'nama_pemohon' => 'required|string',
+            'nik' => 'required|string',
+            'no_hp' => 'required|string',
             'jenis_surat' => 'required|string',
             'keterangan' => 'nullable|string',
         ]);
 
-        // Default status = pending
-        $validated['status'] = 'pending'; 
+        // Default status
+        $validated['status'] = 'Menunggu'; 
 
         $surat = Surat::create($validated);
 
-        return response()->json([
-            'message' => 'Surat berhasil diajukan',
-            'data' => $surat
-        ], 201);
+        return response()->json(['message' => 'Berhasil', 'data' => $surat], 201);
     }
 
-    // Update Status Surat (Admin)
+    // 3. Update Status
     public function update(Request $request, $id)
     {
         $surat = Surat::find($id);
+        if (!$surat) return response()->json(['message' => '404'], 404);
 
-        if (!$surat) {
-            return response()->json(['message' => 'Surat tidak ditemukan'], 404);
-        }
+        $surat->update(['status' => 'Selesai']);
+        return response()->json(['message' => 'Status Updated', 'data' => $surat]);
+    }
 
-        // Validasi input status
-        $request->validate([
-            'status' => 'required|in:pending,proses,selesai,ditolak'
-        ]);
+    // 4. Cetak PDF
+    public function cetakPdf($id)
+    {
+        $surat = Surat::find($id);
+        if (!$surat) return response()->json(['message' => '404'], 404);
 
-        $surat->status = $request->status;
-        $surat->save();
-
-        return response()->json([
-            'message' => 'Status surat berhasil diperbarui',
-            'data' => $surat
-        ]);
+        $pdf = Pdf::loadView('pdf.surat_template', ['surat' => $surat]);
+        return $pdf->stream();
     }
 }

@@ -15,13 +15,16 @@ export default function LayananSurat() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // Daftar Surat (Sudah Diupdate)
   const daftarSurat = [
     "Surat Keterangan Tidak Mampu (SKTM)",
     "Surat Keterangan Domisili",
     "Surat Keterangan Usaha (SKU)",
-    "Surat Pengantar Nikah",
     "Surat Keterangan Belum Menikah",
     "Surat Keterangan Kematian",
+    "Surat Keterangan Pindah",    // <-- Baru
+    "Surat Pengantar PBB",        // <-- Baru
+    "Surat Pengantar Capil",      // <-- Baru
     "Lainnya"
   ];
 
@@ -35,7 +38,7 @@ export default function LayananSurat() {
       setLoading(false);
 
       // --- AUTO WHATSAPP ---
-      const adminPhone = "6281234567890"; // Ganti No WA Admin Desa disini
+      const adminPhone = "6281234567890"; // Ganti No WA Admin Desa
       const text = `Halo Admin, saya ${formData.nama_pemohon} (NIK: ${formData.nik}) sudah mengajukan *${formData.jenis_surat}* via web. Mohon diproses.`;
       
       setTimeout(() => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import api from '../api';
-import Navbar from '../components/Navbar'; // Opsional, jika ingin navbar tetap ada
+import api from '../api'; 
+import { FileText, Printer, CheckCircle, Clock } from 'lucide-react';
 
 export default function SuratAdmin() {
   const [suratList, setSuratList] = useState([]);
@@ -9,11 +9,12 @@ export default function SuratAdmin() {
   // Ambil Data Surat
   const fetchSurat = async () => {
     try {
-      const response = await api.get('/surat');
+      setLoading(true);
+      const response = await api.get('/surat'); 
       setSuratList(response.data);
+      setLoading(false);
     } catch (error) {
-      console.error("Gagal ambil surat:", error);
-    } finally {
+      console.error("Gagal ambil data:", error);
       setLoading(false);
     }
   };
@@ -22,95 +23,100 @@ export default function SuratAdmin() {
     fetchSurat();
   }, []);
 
-  // Fungsi Ubah Status
-  const handleStatusChange = async (id, newStatus) => {
-    if(!confirm(`Ubah status menjadi ${newStatus}?`)) return;
-
+  // Update Status
+  const handleStatus = async (id) => {
+    if (!confirm("Tandai surat ini sebagai Selesai?")) return;
     try {
-      await api.put(`/surat/${id}`, { status: newStatus });
-      fetchSurat(); // Refresh data setelah update
-      alert('Status berhasil diperbarui!');
+      await api.put(`/surat/${id}`, { status: 'Selesai' });
+      fetchSurat();
     } catch (error) {
-      console.error("Gagal update status:", error);
-      alert('Gagal update status.');
+      alert("Gagal update status");
     }
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-slate-800 mb-6">📩 Kelola Pengajuan Surat</h1>
-        
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-slate-100 border-b border-slate-200">
-              <tr>
-                <th className="p-4 text-sm font-semibold text-slate-600">Tanggal</th>
-                <th className="p-4 text-sm font-semibold text-slate-600">Pemohon</th>
-                <th className="p-4 text-sm font-semibold text-slate-600">Jenis Surat</th>
-                <th className="p-4 text-sm font-semibold text-slate-600">Keterangan</th>
-                <th className="p-4 text-sm font-semibold text-slate-600">Status</th>
-                <th className="p-4 text-sm font-semibold text-slate-600">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {loading ? (
-                <tr><td colSpan="6" className="p-4 text-center">Memuat data...</td></tr>
-              ) : suratList.length === 0 ? (
-                <tr><td colSpan="6" className="p-4 text-center">Belum ada surat masuk.</td></tr>
-              ) : (
-                suratList.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50">
-                    <td className="p-4 text-sm text-slate-600">
-                      {new Date(item.created_at).toLocaleDateString('id-ID')}
-                    </td>
-                    <td className="p-4 font-medium text-slate-800">
-                      {item.nama_pemohon}<br/>
-                      <span className="text-xs text-slate-400">NIK: {item.nik}</span>
-                    </td>
-                    <td className="p-4 text-slate-600">{item.jenis_surat}</td>
-                    <td className="p-4 text-slate-500 text-sm italic">{item.keterangan || '-'}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-1 rounded text-xs font-bold capitalize
-                        ${item.status === 'selesai' ? 'bg-green-100 text-green-700' : 
-                          item.status === 'ditolak' ? 'bg-red-100 text-red-700' : 
-                          'bg-yellow-100 text-yellow-700'}`}>
-                        {item.status}
+    <div className="p-6 bg-slate-50 min-h-screen">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+          <FileText className="text-blue-600" /> Manajemen Surat Masuk
+        </h1>
+        <button onClick={fetchSurat} className="px-4 py-2 text-sm text-blue-600 border border-blue-200 rounded bg-white hover:bg-blue-50">
+          Refresh
+        </button>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead className="bg-slate-100 text-slate-600 uppercase text-xs font-bold">
+            <tr>
+              <th className="p-4">Tanggal</th>
+              <th className="p-4">Pemohon</th>
+              <th className="p-4">Jenis Surat</th>
+              <th className="p-4">Status</th>
+              <th className="p-4 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {loading ? (
+              <tr><td colSpan="5" className="p-8 text-center text-slate-500">Memuat data...</td></tr>
+            ) : suratList.length === 0 ? (
+              <tr><td colSpan="5" className="p-8 text-center text-slate-400">Belum ada surat masuk.</td></tr>
+            ) : (
+              suratList.map((surat) => (
+                <tr key={surat.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="p-4 text-sm text-slate-500">
+                    {new Date(surat.created_at).toLocaleDateString('id-ID')}
+                  </td>
+                  <td className="p-4">
+                    <div className="font-bold text-slate-800">{surat.nama_pemohon}</div>
+                    <div className="text-xs text-slate-500">NIK: {surat.nik || surat.nik_pemohon}</div>
+                  </td>
+                  <td className="p-4">
+                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
+                      {surat.jenis_surat}
+                    </span>
+                  </td>
+                  <td className="p-4">
+                    {surat.status === 'Selesai' ? (
+                      <span className="flex items-center gap-1 text-green-600 text-sm font-bold">
+                        <CheckCircle size={16} /> Selesai
                       </span>
-                    </td>
-                    <td className="p-4 space-x-2">
-                      {/* Tombol Aksi */}
-                      {item.status === 'pending' && (
-                        <>
-                          <button 
-                            onClick={() => handleStatusChange(item.id, 'selesai')}
-                            className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition"
-                          >
-                            Setujui
-                          </button>
-                          <button 
-                            onClick={() => handleStatusChange(item.id, 'ditolak')}
-                            className="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition"
-                          >
-                            Tolak
-                          </button>
-                        </>
+                    ) : (
+                      <span className="flex items-center gap-1 text-yellow-600 text-sm font-bold">
+                        <Clock size={16} /> Menunggu
+                      </span>
+                    )}
+                  </td>
+                  <td className="p-4 text-center">
+                    <div className="flex justify-center gap-2">
+                      
+                      {/* 🔥 TOMBOL PRINT MERAH */}
+                      <a 
+                        href={`http://127.0.0.1:8000/api/surat/${surat.id}/cetak`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm font-medium transition shadow-sm"
+                        title="Cetak PDF"
+                      >
+                        <Printer size={16} /> Print
+                      </a>
+
+                      {/* Tombol Acc */}
+                      {surat.status !== 'Selesai' && (
+                        <button 
+                          onClick={() => handleStatus(surat.id)}
+                          className="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm font-medium transition shadow-sm"
+                        >
+                          <CheckCircle size={16} /> Acc
+                        </button>
                       )}
-                      {item.status !== 'pending' && (
-                         <button 
-                         onClick={() => handleStatusChange(item.id, 'pending')}
-                         className="text-slate-400 text-xs underline hover:text-slate-600"
-                       >
-                         Reset
-                       </button>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
