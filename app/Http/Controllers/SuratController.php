@@ -4,36 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Surat;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf; // <--- Pastikan baris ini ada!
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SuratController extends Controller
 {
-    // 1. Ambil List Surat
     public function index()
     {
         return response()->json(Surat::latest()->get());
     }
 
-    // 2. Simpan Surat (Warga)
     public function store(Request $request)
     {
+        // Validasi Lengkap
         $validated = $request->validate([
-            'nama_pemohon' => 'required|string',
             'nik' => 'required|string',
+            'nama_pemohon' => 'required|string',
+            'tempat_lahir' => 'required|string',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|string',
+            'pekerjaan' => 'required|string',
+            'agama' => 'required|string',
+            'alamat' => 'required|string',
             'no_hp' => 'required|string',
             'jenis_surat' => 'required|string',
             'keterangan' => 'nullable|string',
         ]);
 
-        // Default status
-        $validated['status'] = 'Menunggu'; 
-
+        $validated['status'] = 'Menunggu';
         $surat = Surat::create($validated);
 
         return response()->json(['message' => 'Berhasil', 'data' => $surat], 201);
     }
 
-    // 3. Update Status
     public function update(Request $request, $id)
     {
         $surat = Surat::find($id);
@@ -43,7 +45,6 @@ class SuratController extends Controller
         return response()->json(['message' => 'Status Updated', 'data' => $surat]);
     }
 
-    // 4. Cetak PDF
     public function cetakPdf($id)
     {
         $surat = Surat::find($id);
