@@ -22,8 +22,8 @@ return new class extends Migration
             $table->text('alamat');         
             $table->string('no_hp');
 
-            // --- 2. DATA PASANGAN (BARU & PENTING!) ---
-            // Kita pakai 'nullable()' supaya surat lain (SKTM dll) tidak error
+            // --- 2. DATA PASANGAN (Hubungan Suami/Istri) ---
+            // Dibuat nullable() agar surat lain (SKTM, SKU) tidak error
             $table->string('nik_pasangan')->nullable();
             $table->string('nama_pasangan')->nullable();
             $table->string('tempat_lahir_pasangan')->nullable();
@@ -35,7 +35,7 @@ return new class extends Migration
 
             // --- 3. DATA SURAT ---
             $table->string('jenis_surat');
-            $table->text('keterangan')->nullable();
+            $table->text('keterangan')->nullable(); // Dipakai untuk Detail Usaha / Alamat Pindah / Tanggal Nikah
             $table->string('status')->default('Menunggu');
             $table->timestamps();
         });

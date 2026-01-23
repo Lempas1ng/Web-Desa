@@ -15,8 +15,8 @@ class SuratController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi Lengkap
         $validated = $request->validate([
+            // Data Pemohon (Wajib)
             'nik' => 'required|string',
             'nama_pemohon' => 'required|string',
             'tempat_lahir' => 'required|string',
@@ -26,6 +26,18 @@ class SuratController extends Controller
             'agama' => 'required|string',
             'alamat' => 'required|string',
             'no_hp' => 'required|string',
+            
+            // Data Pasangan (Opsional / Boleh Kosong)
+            'nik_pasangan' => 'nullable|string',
+            'nama_pasangan' => 'nullable|string',
+            'tempat_lahir_pasangan' => 'nullable|string',
+            'tanggal_lahir_pasangan' => 'nullable|date',
+            'jenis_kelamin_pasangan' => 'nullable|string',
+            'pekerjaan_pasangan' => 'nullable|string',
+            'agama_pasangan' => 'nullable|string',
+            'alamat_pasangan' => 'nullable|string',
+
+            // Data Surat
             'jenis_surat' => 'required|string',
             'keterangan' => 'nullable|string',
         ]);
