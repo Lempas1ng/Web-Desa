@@ -9,6 +9,17 @@ class Berita extends Model
 {
     use HasFactory;
 
-    // TAMBAHKAN BARIS INI (Biar bisa simpan data)
-    protected $guarded = []; 
+    protected $guarded = [];
+
+    // Tambahkan 'gambar_url' ke dalam JSON response
+    protected $appends = ['gambar_url'];
+
+    // Accessor: Otomatis ubah path database jadi URL lengkap
+    public function getGambarUrlAttribute()
+    {
+        if ($this->gambar) {
+            return asset('storage/' . $this->gambar);
+        }
+        return 'https://via.placeholder.com/400x300?text=No+Image';
+    }
 }

@@ -3,7 +3,7 @@ import { ArrowRight, MapPin, Anchor, ShoppingBag, FileText, ChevronDown, Newspap
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import api from '../api';
-import { villageInfo as staticVillageInfo, featuresData as staticFeatures, beritaData as staticBerita } from '../data';
+import { villageInfo as staticVillageInfo, featuresData as staticFeatures } from '../data';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
@@ -16,30 +16,38 @@ const staggerContainer = {
 
 export default function Home() {
   const [info, setInfo] = useState(staticVillageInfo);
-  const [features, setFeatures] = useState(staticFeatures);
-  const [latestNews, setLatestNews] = useState(staticBerita.slice(0, 3));
-  const [isLoading, setIsLoading] = useState(true);
-
-  // 1. UPDATE DATA STATISTIK DI SINI 📊
+  // Hapus staticStats, ganti langsung dengan data manual Anda di sini:
   const [stats, setStats] = useState([
     { id: 1, value: "7.658", label: "Jumlah Penduduk" },
     { id: 2, value: "2.079", label: "Jumlah Kepala Keluarga" },
     { id: 3, value: "2", label: "Destinasi Wisata" }
   ]);
+  const [features, setFeatures] = useState(staticFeatures);
+  const [latestNews, setLatestNews] = useState([]); 
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 1. Ambil data landing
         const landingRes = await api.get('/landing');
         if(landingRes.data) {
            setInfo(landingRes.data.villageInfo);
-           // Jika backend mengirim data stats, gunakan ini. 
-           // Jika tidak, dia akan pakai default yang kita set di atas.
-           if (landingRes.data.statsData) setStats(landingRes.data.statsData);
+           // setStats(landingRes.data.statsData); // <--- BARIS INI SAYA HAPUS AGAR ANGKA 7.658 TIDAK TERTIMPA
            setFeatures(landingRes.data.featuresData);
         }
       } catch (error) {
-        console.warn("Gagal connect ke Backend, menggunakan data statis.", error);
+        console.warn("Menggunakan data statis untuk info desa.");
+      }
+
+      try {
+        // 2. AMBIL BERITA REAL DARI DATABASE
+        const beritaRes = await api.get('/berita'); 
+        if(Array.isArray(beritaRes.data)) {
+            setLatestNews(beritaRes.data.slice(0, 3));
+        }
+      } catch (error) {
+        console.error("Gagal mengambil berita real.", error);
       } finally {
         setIsLoading(false);
       }
@@ -67,7 +75,6 @@ export default function Home() {
           style={{ backgroundImage: `url('${info.heroImage}')` }}
         />
         
-        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/40 to-surface"></div>
 
         <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-4 max-w-5xl mx-auto mt-10">
@@ -126,15 +133,14 @@ export default function Home() {
         </motion.div>
       </div>
 
-      {/* 2. STATISTIK (Updated Grid & Data) */}
+      {/* 2. STATISTIK (Grid disesuaikan jadi 3 kolom agar rapi) */}
       <div className="relative z-20 -mt-24 px-4">
         <motion.div 
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeInUp}
-          // PERUBAHAN: Menggunakan grid-cols-3 agar 3 item pas di tengah
-          className="max-w-6xl mx-auto bg-white/95 backdrop-blur border border-neutral rounded-3xl shadow-2xl p-8 md:p-12 grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="max-w-7xl mx-auto bg-white/95 backdrop-blur border border-neutral rounded-3xl shadow-2xl p-8 md:p-12 grid grid-cols-1 md:grid-cols-3 gap-8"
         >
           {stats.map((stat) => (
             <div key={stat.id} className="text-center md:border-r last:border-0 border-neutral/50 pb-6 md:pb-0 border-b md:border-b-0 last:pb-0 last:border-b-0">
@@ -235,7 +241,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. BERITA TERBARU */}
+      {/* 5. BERITA TERBARU (Data Real) */}
       <section className="py-24 bg-surface">
         <div className="max-w-7xl mx-auto px-4">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
@@ -257,28 +263,47 @@ export default function Home() {
                 variants={staggerContainer}
                 className="grid md:grid-cols-3 gap-8"
             >
-                {latestNews.map((news) => (
-                    <motion.div variants={fadeInUp} key={news.id}>
-                        <Link to={`/berita/${news.id}`} className="group block h-full">
-                            <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 h-full flex flex-col border border-slate-100 group-hover:border-neutral">
-                                <div className="h-52 overflow-hidden relative">
-                                    <img src={news.image} alt={news.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                    <div className="absolute top-3 left-3 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{news.category}</div>
-                                </div>
-                                <div className="p-6 flex flex-col flex-grow relative">
-                                    <div className="text-xs text-secondary font-semibold mb-2 flex items-center gap-1">
-                                      <span className="w-2 h-2 rounded-full bg-secondary"></span>
-                                      {news.date}
+                {latestNews.length > 0 ? (
+                    latestNews.map((news) => (
+                        <motion.div variants={fadeInUp} key={news.id}>
+                            <Link to={`/berita/${news.id}`} className="group block h-full">
+                                <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 h-full flex flex-col border border-slate-100 group-hover:border-neutral">
+                                    <div className="h-52 overflow-hidden relative">
+                                        <img 
+                                            src={news.gambar_url} 
+                                            alt={news.judul} 
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                            onError={(e) => {e.target.src="https://via.placeholder.com/400x300?text=No+Image"}}
+                                        />
+                                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                        <div className="absolute top-3 left-3 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                                            Info Desa
+                                        </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-primary mb-3 group-hover:text-accent transition-colors line-clamp-2">{news.title}</h3>
-                                    <p className="text-slate-600 text-sm line-clamp-3 mb-4 flex-grow">{news.snippet}</p>
-                                    <span className="text-accent text-sm font-bold mt-auto inline-flex items-center group-hover:translate-x-2 transition-transform">Baca Selengkapnya &rarr;</span>
+                                    <div className="p-6 flex flex-col flex-grow relative">
+                                        <div className="text-xs text-secondary font-semibold mb-2 flex items-center gap-1">
+                                          <span className="w-2 h-2 rounded-full bg-secondary"></span>
+                                          {new Date(news.created_at).toLocaleDateString('id-ID', {
+                                              day: 'numeric', month: 'long', year: 'numeric'
+                                          })}
+                                        </div>
+                                        <h3 className="text-xl font-bold text-primary mb-3 group-hover:text-accent transition-colors line-clamp-2">
+                                            {news.judul}
+                                        </h3>
+                                        <p className="text-slate-600 text-sm line-clamp-3 mb-4 flex-grow">
+                                            {news.isi}
+                                        </p>
+                                        <span className="text-accent text-sm font-bold mt-auto inline-flex items-center group-hover:translate-x-2 transition-transform">Baca Selengkapnya &rarr;</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    </motion.div>
-                ))}
+                            </Link>
+                        </motion.div>
+                    ))
+                ) : (
+                    <div className="col-span-3 text-center py-10 bg-white rounded-xl border border-dashed border-gray-300">
+                        <p className="text-slate-500">Belum ada berita terbaru.</p>
+                    </div>
+                )}
             </motion.div>
         </div>
       </section>
