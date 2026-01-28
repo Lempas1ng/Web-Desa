@@ -9,15 +9,16 @@ import UmkmDetail from './pages/UmkmDetail';
 import Wisata from './pages/Wisata';
 import WisataDetail from './pages/WisataDetail';
 import LayananSurat from './pages/LayananSurat';
-import Login from './pages/Login';
-import CekSurat from './pages/CekSurat'; // <--- 1. Import Halaman Baru
-import ProtectedRoute from './components/ProtectedRoute';
 import Pengaduan from './pages/Pengaduan';
+import Login from './pages/Login';
+import CekSurat from './pages/CekSurat'; // Pastikan ini ada jika fitur cek surat dipakai
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Halaman Admin
 import AdminDashboard from './pages/AdminDashboard';
 import SuratAdmin from './pages/SuratAdmin';
 import BeritaAdmin from './pages/BeritaAdmin';
+import PengaduanAdmin from './pages/PengaduanAdmin'; // <--- INI PENTING!
 
 function App() {
   return (
@@ -34,11 +35,8 @@ function App() {
         <Route path="/wisata" element={<Wisata />} />
         <Route path="/wisata/:id" element={<WisataDetail />} />
         <Route path="/layanan-surat" element={<LayananSurat />} />
+        <Route path="/cek-surat" element={<CekSurat />} />
         <Route path="/pengaduan" element={<Pengaduan />} />
-        
-        {/* 🔥 2. Tambahkan Route Cek Surat di sini */}
-        <Route path="/cek-surat" element={<CekSurat />} /> 
-        
         <Route path="/login" element={<Login />} />
 
         {/* Rute Admin (Harus Login) */}
@@ -46,6 +44,9 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/surat-admin" element={<SuratAdmin />} />
           <Route path="/berita-admin" element={<BeritaAdmin />} />
+          
+          {/* 🔥 JALUR ADMIN PENGADUAN DIBUKA DI SINI */}
+          <Route path="/pengaduan-admin" element={<PengaduanAdmin />} />
         </Route>
       </Routes>
     </div>
