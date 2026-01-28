@@ -38,11 +38,11 @@ export default function CekSurat() {
   // Komponen Label Status
   const StatusBadge = ({ status }) => {
     if (status === 'Selesai') {
-      return <span className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold"><CheckCircle size={14}/> Selesai</span>;
+      return <span className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"><CheckCircle size={14}/> Selesai</span>;
     } else if (status === 'Ditolak') {
-      return <span className="flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold"><XCircle size={14}/> Ditolak</span>;
+      return <span className="flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"><XCircle size={14}/> Ditolak</span>;
     } else {
-      return <span className="flex items-center gap-1 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold"><Clock size={14}/> Menunggu</span>;
+      return <span className="flex items-center gap-1 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"><Clock size={14}/> Menunggu</span>;
     }
   };
 
@@ -54,18 +54,18 @@ export default function CekSurat() {
           <ArrowLeft size={20} className="mr-2" /> Kembali ke Beranda
         </Link>
 
-        <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 text-center mb-8">
-          <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-blue-600">
-            <Search size={32} />
+        <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-100 text-center mb-8">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-blue-600">
+            <Search className="w-8 h-8 sm:w-9 sm:h-9" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-800 mb-2">Lacak Status Surat</h1>
-          <p className="text-slate-500 mb-6">Masukkan NIK Pemohon untuk melihat progres surat Anda.</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">Lacak Status Surat</h1>
+          <p className="text-sm sm:text-base text-slate-500 mb-6">Masukkan NIK Pemohon untuk melihat progres surat Anda.</p>
 
           <form onSubmit={handleCek} className="relative">
             <input 
               type="number" 
               placeholder="Masukan NIK (16 Digit)..." 
-              className="w-full pl-5 pr-14 py-4 rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none text-lg font-bold text-slate-700 transition-all placeholder:font-normal"
+              className="w-full pl-5 pr-14 py-3 sm:py-4 rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none text-base sm:text-lg font-bold text-slate-700 transition-all placeholder:font-normal"
               value={nik}
               onChange={(e) => setNik(e.target.value)}
               required
@@ -73,7 +73,7 @@ export default function CekSurat() {
             <button 
               type="submit" 
               disabled={loading}
-              className="absolute right-2 top-2 bottom-2 bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-lg font-bold transition-all disabled:opacity-70"
+              className="absolute right-2 top-2 bottom-2 bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-lg font-bold transition-all disabled:opacity-70 flex items-center justify-center"
             >
               {loading ? <div className="animate-spin w-5 h-5 border-2 border-white/30 border-t-white rounded-full"></div> : <Search size={20}/>}
             </button>
@@ -81,7 +81,7 @@ export default function CekSurat() {
 
           {errorMsg && (
             <div className="mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm flex items-center justify-center gap-2 animate-pulse">
-              <AlertCircle size={16}/> {errorMsg}
+              <AlertCircle size={16} className="shrink-0"/> <span>{errorMsg}</span>
             </div>
           )}
         </div>
@@ -96,19 +96,32 @@ export default function CekSurat() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow flex justify-between items-center"
+                  // PERBAIKAN RESPONSIVITAS DI SINI:
+                  // flex-col untuk mobile, sm:flex-row untuk tablet ke atas
+                  className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="bg-blue-50 p-3 rounded-xl text-blue-600 hidden sm:block">
+                  <div className="flex items-start gap-4 w-full">
+                    {/* Icon tetap hidden di mobile agar hemat tempat, muncul di layar besar */}
+                    <div className="bg-blue-50 p-3 rounded-xl text-blue-600 hidden sm:block shrink-0">
                       <FileText size={24} />
                     </div>
-                    <div>
-                      <h3 className="font-bold text-slate-800 text-lg">{item.jenis_surat}</h3>
-                      <p className="text-slate-500 text-sm mb-1">Diajukan: {new Date(item.created_at).toLocaleDateString('id-ID')}</p>
-                      <p className="text-xs text-slate-400">a.n. {item.nama_pemohon}</p>
+                    <div className="flex-1 min-w-0"> {/* min-w-0 penting untuk text truncate/wrap di flex item */}
+                      <h3 className="font-bold text-slate-800 text-lg leading-snug break-words">
+                        {item.jenis_surat}
+                      </h3>
+                      <p className="text-slate-500 text-sm mt-1">
+                        Diajukan: {new Date(item.created_at).toLocaleDateString('id-ID')}
+                      </p>
+                      <p className="text-xs text-slate-400 mt-0.5 truncate">
+                        a.n. {item.nama_pemohon}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
+
+                  {/* Bagian Status */}
+                  <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-0 border-slate-100">
+                    {/* Label Status muncul di mobile untuk kejelasan */}
+                    <span className="text-xs text-slate-400 font-medium sm:hidden">Status Pengajuan:</span>
                     <StatusBadge status={item.status} />
                   </div>
                 </motion.div>
