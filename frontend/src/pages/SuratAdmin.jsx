@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api'; 
 import { FileText, Printer, CheckCircle, Clock, Search, XCircle, Filter, ChevronDown, User } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
+import Swal from 'sweetalert2';
 
 export default function SuratAdmin() {
   const [suratList, setSuratList] = useState([]);
@@ -22,7 +23,7 @@ export default function SuratAdmin() {
       setSuratList(response.data);
     } catch (error) {
       console.error("Gagal ambil data:", error);
-      alert("Gagal mengambil data surat.");
+      Swal.fire('Error', 'Gagal mengambil data surat.', 'error');
     } finally {
       setLoading(false);
     }
@@ -32,20 +33,42 @@ export default function SuratAdmin() {
     fetchSurat();
   }, []);
 
-  // Update Status (Terima / Tolak)
+  // Update Status (Terima / Tolak) dengan SweetAlert2
   const updateStatus = async (id, newStatus) => {
-    const konfirmasi = newStatus === 'Selesai' 
-      ? "Setujui dan tandai surat ini sebagai Selesai?" 
-      : "Apakah Anda yakin ingin MENOLAK permohonan ini?";
+    const isApprove = newStatus === 'Selesai';
+    
+    const result = await Swal.fire({
+      title: isApprove ? 'Setujui Permohonan?' : 'Tolak Permohonan?',
+      text: isApprove 
+        ? "Surat akan ditandai sebagai Selesai dan siap diambil." 
+        : "Permohonan warga akan ditolak. Pastikan alasan jelas.",
+      icon: isApprove ? 'question' : 'warning',
+      showCancelButton: true,
+      confirmButtonColor: isApprove ? '#2563eb' : '#dc2626', // Blue / Red
+      cancelButtonColor: '#94a3b8',
+      confirmButtonText: isApprove ? 'Ya, Setujui' : 'Ya, Tolak',
+      cancelButtonText: 'Batal'
+    });
 
-    if (!confirm(konfirmasi)) return;
+    if (!result.isConfirmed) return;
 
     try {
       await api.put(`/surat/${id}`, { status: newStatus });
+      
+      // Notifikasi Sukses
+      Swal.fire({
+        title: 'Berhasil!',
+        text: `Status surat berhasil diperbarui menjadi ${newStatus}.`,
+        icon: 'success',
+        confirmButtonColor: '#2563eb',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
       fetchSurat(); // Refresh data
     } catch (error) {
       console.error(error);
-      alert("Gagal update status");
+      Swal.fire('Gagal', 'Terjadi kesalahan saat memperbarui status.', 'error');
     }
   };
 
