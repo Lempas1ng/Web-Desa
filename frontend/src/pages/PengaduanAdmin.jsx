@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AdminLayout from '../components/AdminLayout'; 
+import Swal from 'sweetalert2';
 
 export default function PengaduanAdmin() {
   const [laporan, setLaporan] = useState([]);
@@ -49,29 +50,67 @@ export default function PengaduanAdmin() {
     setFilteredLaporan(result);
   }, [laporan, filterStatus, searchTerm]);
 
-  // Update Status
+  // Update Status dengan Toast Notification
   const handleStatus = async (id, newStatus) => {
     try {
       await api.put(`/pengaduan/${id}`, { status: newStatus });
+      
       const updated = laporan.map(item => 
         item.id === id ? { ...item, status: newStatus } : item
       );
       setLaporan(updated);
       if (selectedItem) setSelectedItem({ ...selectedItem, status: newStatus });
+
+      // Toast Notification (Kecil di pojok)
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+      
+      Toast.fire({
+        icon: 'success',
+        title: `Status diubah menjadi ${newStatus}`
+      });
+
     } catch (error) {
-      alert("Gagal update status");
+      Swal.fire('Error', 'Gagal update status', 'error');
     }
   };
 
-  // Hapus Laporan
+  // Hapus Laporan dengan SweetAlert
   const handleDelete = async (id) => {
-    if (!window.confirm("Hapus laporan ini permanen?")) return;
+    const result = await Swal.fire({
+      title: 'Hapus Laporan?',
+      text: "Data yang dihapus tidak dapat dikembalikan!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626', // Merah
+      cancelButtonColor: '#94a3b8',
+      confirmButtonText: 'Ya, Hapus!',
+      cancelButtonText: 'Batal'
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       await api.delete(`/pengaduan/${id}`);
       setLaporan(prev => prev.filter(item => item.id !== id));
       setSelectedItem(null);
+      
+      Swal.fire(
+        'Terhapus!',
+        'Laporan telah dihapus.',
+        'success'
+      );
     } catch (error) {
-      alert("Gagal menghapus");
+      Swal.fire('Gagal', 'Tidak bisa menghapus data.', 'error');
     }
   };
 
